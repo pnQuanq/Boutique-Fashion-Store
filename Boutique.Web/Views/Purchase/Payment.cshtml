@@ -1,0 +1,74 @@
+﻿<!-- Confirmation Section -->
+<section class="container my-5">
+    <h2 class="text-center">Confirm Your Payment</h2>
+    <div class="card">
+        <div class="card-body">
+            <h4>Order Summary</h4>
+            <p><strong>Full Name:</strong> <span id="summaryFullName">John Doe</span></p>
+            <p><strong>Email:</strong> <span id="summaryEmail">john.doe@example.com</span></p>
+            <p><strong>Phone:</strong> <span id="summaryPhone">+123456789</span></p>
+
+            <h5 class="mt-4">Shipping Address</h5>
+            <p><strong>Address:</strong> <span id="summaryAddress">123 Fashion St</span></p>
+            <p><strong>City:</strong> <span id="summaryCity">Fashion City</span></p>
+            <p><strong>State:</strong> <span id="summaryState">Fashion State</span></p>
+            <p><strong>Zip Code:</strong> <span id="summaryZip">12345</span></p>
+            <p><strong>Country:</strong> <span id="summaryCountry">Fashionland</span></p>
+
+            <h5 class="mt-4">Payment Method</h5>
+            <p><strong>Method:</strong> <span id="summaryPaymentMethod">Credit Card</span></p>
+
+            <h5 class="mt-4">Products Ordered</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody id="productsList">
+                    <tr>
+                        <td>T-Shirt</td>
+                        <td>2</td>
+                        <td>M</td>
+                        <td>Blue</td>
+                        <td>$19.99</td>
+                    </tr>
+                    <tr>
+                        <td>Jeans</td>
+                        <td>1</td>
+                        <td>32</td>
+                        <td>Black</td>
+                        <td>$39.99</td>
+                    </tr>
+                    <tr>
+                        <td>Sneakers</td>
+                        <td>1</td>
+                        <td>10</td>
+                        <td>White</td>
+                        <td>$49.99</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h5 class="mt-4">Order Total</h5>
+            <p><strong>Total Amount:</strong> <span id="totalAmount">$109.97</span></p>
+
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-success btn-lg" onclick="confirmPayment()">Confirm Payment</button>
+                <a href="checkout.html" class="btn btn-danger btn-lg">Edit Details</a>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function confirmPayment() {
+        // Here you can add logic to handle the payment confirmation
+        alert("Payment has been confirmed! Thank you for your purchase.");
+        // Redirect to a success page or another page
+        window.location.href = "thank_you.html"; // Replace with your thank you page
+    }
+</script>

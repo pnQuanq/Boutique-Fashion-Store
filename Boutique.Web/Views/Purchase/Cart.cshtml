@@ -1,0 +1,162 @@
+﻿<!-- Cart Section -->
+<section class="container my-5">
+    <h2 class="text-center">Your Cart</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Size</th>
+                <th scope="col">Color</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Total</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="https://via.placeholder.com/100" alt="Product 1" class="img-fluid me-2">
+                        <span>Product 1</span>
+                    </div>
+                </td>
+                <td>
+                    <select class="form-select" aria-label="Select Size">
+                        <option selected>Choose size</option>
+                        <option value="S">Small</option>
+                        <option value="M">Medium</option>
+                        <option value="L">Large</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-select" aria-label="Select Color">
+                        <option selected>Choose color</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="input-group" style="max-width: 120px;">
+                        <button class="btn btn-outline-secondary" onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" class="form-control" value="1" min="1" readonly>
+                        <button class="btn btn-outline-secondary" onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </td>
+                <td>$29.99</td>
+                <td class="total-price">$29.99</td>
+                <td>
+                    <button class="btn btn-danger btn-sm">Remove</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="https://via.placeholder.com/100" alt="Product 2" class="img-fluid me-2">
+                        <span>Product 2</span>
+                    </div>
+                </td>
+                <td>
+                    <select class="form-select" aria-label="Select Size">
+                        <option selected>Choose size</option>
+                        <option value="S">Small</option>
+                        <option value="M">Medium</option>
+                        <option value="L">Large</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-select" aria-label="Select Color">
+                        <option selected>Choose color</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="input-group" style="max-width: 120px;">
+                        <button class="btn btn-outline-secondary" onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" class="form-control" value="1" min="1" readonly>
+                        <button class="btn btn-outline-secondary" onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </td>
+                <td>$39.99</td>
+                <td class="total-price">$39.99</td>
+                <td>
+                    <button class="btn btn-danger btn-sm">Remove</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="https://via.placeholder.com/100" alt="Product 3" class="img-fluid me-2">
+                        <span>Product 3</span>
+                    </div>
+                </td>
+                <td>
+                    <select class="form-select" aria-label="Select Size">
+                        <option selected>Choose size</option>
+                        <option value="S">Small</option>
+                        <option value="M">Medium</option>
+                        <option value="L">Large</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-select" aria-label="Select Color">
+                        <option selected>Choose color</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="input-group" style="max-width: 120px;">
+                        <button class="btn btn-outline-secondary" onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" class="form-control" value="1" min="1" readonly>
+                        <button class="btn btn-outline-secondary" onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </td>
+                <td>$49.99</td>
+                <td class="total-price">$49.99</td>
+                <td>
+                    <button class="btn btn-danger btn-sm">Remove</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+        <h4 class="me-3">Total: <span id="cart-total">$119.97</span></h4>
+    </div>
+    <div class="text-center my-4">
+        <a href="#" class="btn btn-success btn-lg">Proceed to Checkout</a>
+    </div>
+</section>
+<script>
+    function changeQuantity(button, change) {
+        const input = button.parentNode.querySelector('input[type="number"]');
+        let quantity = parseInt(input.value) + change;
+
+        // Ensure quantity doesn't go below 1
+        if (quantity < 1) {
+            quantity = 1;
+        }
+
+        input.value = quantity;
+
+        // Calculate total price for the row
+        const price = parseFloat(button.closest('tr').querySelector('td:nth-child(5)').innerText.replace('$', ''));
+        const totalPrice = (quantity * price).toFixed(2);
+        button.closest('tr').querySelector('.total-price').innerText = `$${totalPrice}`;
+
+        // Update overall total
+        updateCartTotal();
+    }
+
+    function updateCartTotal() {
+        let total = 0;
+        document.querySelectorAll('.total-price').forEach(element => {
+            total += parseFloat(element.innerText.replace('$', ''));
+        });
+        document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+    }
+</script>

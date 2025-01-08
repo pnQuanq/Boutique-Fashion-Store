@@ -1,0 +1,143 @@
+﻿@{
+    Layout = null;
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" id="successMessage">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" id="errorMessage">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique - Fashion Store</title>
+    <link rel="stylesheet" href="~/css/auth.css" type="text/css">
+    <style>
+        .form-container {
+            display: none;
+        }
+
+            .form-container.active {
+                display: flex;
+                flex-direction: column;
+            }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Login Form -->
+        <div id="login-form" class="form-container active">
+            <form method="post" enctype="multipart/form-data" action="@Url.Action("Login", "Auth")">
+                <h2>Login</h2>
+                <div class="input-field">
+                    <input name="Email" type="text" required>
+                    <label>Enter your email</label>
+                </div>
+                <div class="input-field">
+                    <input name="Password" type="password" required>
+                    <label>Enter your password</label>
+                </div>
+                <div class="forget">
+                    <label for="remember">
+                        <input type="checkbox" id="remember">
+                        <p>Remember me</p>
+                    </label>
+                    <a href="#">Forgot password?</a>
+                </div>
+                <button type="submit">Log In</button>
+                <div class="register">
+                    <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="form-container">
+            <form method="post" enctype="multipart/form-data" action="@Url.Action("Register", "Auth")">
+                <h2>Register</h2>
+                <div class="input-field">
+                    <input type="text" name="FirstName" required>
+                    <label>First Name</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" name="LastName" required>
+                    <label>Last Name</label>
+                </div>
+                <div class="input-field">
+                    <input type="email" name="Email" required>
+                    <label>Enter your email</label>
+                </div>
+                <div class="input-field">
+                    <input type="password" name="Password" required minlength="6">
+                    <label>Enter your password</label>
+                </div>
+                <div class="input-field">
+                    <input type="password" name="RePassword" required minlength="6">
+                    <label>Confirm your password</label>
+                </div>
+                <button type="submit">Register</button>
+                <div class="register">
+                    <p>Already have an account? <a href="#" id="show-login">Log In</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            const accessToken = getCookie('AccessToken');
+            console.log("Access Token from Cookie:", accessToken);
+
+            if (accessToken) {
+                sessionStorage.setItem('accessToken', accessToken);
+                console.log("Token stored in LocalStorage");
+            }
+
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (successMessage) {
+                alert(successMessage.innerText);
+            } else if (errorMessage) {
+                alert(errorMessage.innerText);
+            }
+        };
+
+        // Form toggling logic
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegister = document.getElementById('show-register');
+        const showLogin = document.getElementById('show-login');
+
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.classList.remove('active');
+            registerForm.classList.add('active');
+        });
+
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.classList.remove('active');
+            loginForm.classList.add('active');
+        });
+    </script>
+
+</body>
+</html>

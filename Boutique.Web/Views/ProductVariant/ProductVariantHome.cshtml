@@ -1,0 +1,168 @@
+﻿@using Boutique.Web.ViewModel.ProductVariant
+@model ProductVariantViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success" id="successMessage">
+        @successMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" id="errorMessage">
+        @errorMessage
+    </div>
+}
+
+<h2>Product Variant List</h2>
+<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductVariantModal">Add Product Variant</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Size</th>
+            <th>Color</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var productVariant in Model.ProductVariants)
+        {
+            <tr>
+                <td>@productVariant.Product.Name</td>
+                <td>@productVariant.SizeName</td>
+                <td>@productVariant.ColorName</td>
+                <td>@productVariant.Quantity</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProductVariantModal-@productVariant.ProductVariantId">Edit</button>
+                    <form action="@Url.Action("DeleteProductVariant", "ProductVariant", new { id = productVariant.ProductVariantId })" method="post" style="display:inline;">
+                        <input type="hidden" name="ProductVariantId" value="@productVariant.ProductVariantId" />
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product variant?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+
+            <!-- Edit Product Variant Modal -->
+            <div class="modal fade" id="editProductVariantModal-@productVariant.ProductVariantId" tabindex="-1" aria-labelledby="editProductVariantModalLabel-@productVariant.ProductVariantId" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editProductVariantModalLabel-@productVariant.ProductVariantId">Edit Product Variant</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="@Url.Action("UpdateProductVariant", "ProductVariant")">
+                                <input type="hidden" name="ProductVariantId" value="@productVariant.ProductVariantId" />
+
+                                <div class="mb-3">
+                                    <label for="SizeName-@productVariant.ProductVariantId" class="form-label">Size:</label>
+                                    <input type="text" name="SizeName" id="SizeName-@productVariant.ProductVariantId" class="form-control" value="@productVariant.SizeName" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="ColorName-@productVariant.ProductVariantId" class="form-label">Color:</label>
+                                    <input type="text" name="ColorName" id="ColorName-@productVariant.ProductVariantId" class="form-control" value="@productVariant.ColorName" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="ColorHex-@productVariant.Hex" class="form-label">Hex:</label>
+                                    <input type="text" name="Hex" id="ColorHex-@productVariant.Hex" class="form-control" value="@productVariant.Hex" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Quantity-@productVariant.ProductVariantId" class="form-label">Quantity:</label>
+                                    <input type="number" name="Quantity" id="Quantity-@productVariant.ProductVariantId" class="form-control" value="@productVariant.Quantity" required />
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </tbody>
+</table>
+
+<!-- Add Product Variant Modal -->
+<div class="modal fade" id="addProductVariantModal" tabindex="-1" aria-labelledby="addProductVariantModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductVariantModalLabel">Add Product Variant</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="@Url.Action("CreateProductVariant", "ProductVariant")">
+                    <div class="mb-3">
+                        <label for="ProductId" class="form-label">Product:</label>
+                        <select name="ProductId" id="ProductId" class="form-select" required>
+                            <option value="">Select Product</option>
+                            @foreach (var product in Model.Products)
+                            {
+                                <option value="@product.ProductId">@product.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SizeName" class="form-label">Size:</label>
+                        <input type="text" name="SizeName" id="SizeName" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ColorName" class="form-label">Color:</label>
+                        <input type="text" name="ColorName" id="ColorName" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Hex" class="form-label">Hex:</label>
+                        <input type="text" name="Hex" id="Hex" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Quantity" class="form-label">Quantity:</label>
+                        <input type="number" name="Quantity" id="Quantity" class="form-control" required />
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Add Product Variant</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function hideMessageAndReload(id) {
+        setTimeout(function () {
+            var messageElement = document.getElementById(id);
+            if (messageElement) {
+                messageElement.style.display = 'none';
+            }
+            location.reload();
+        }, 2000);
+    }
+
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <text>hideMessageAndReload('successMessage');</text>
+    }
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <text>hideMessageAndReload('errorMessage');</text>
+    }
+</script>

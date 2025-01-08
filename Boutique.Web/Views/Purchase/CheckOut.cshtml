@@ -1,0 +1,151 @@
+﻿<!-- Checkout Section -->
+<section class="container my-5">
+    <h2 class="text-center">Checkout</h2>
+    <form id="checkout-form">
+        <h4>Select Saved Address</h4>
+        <div class="form-group">
+            <label for="savedAddresses">Choose an Address:</label>
+            <select class="form-control" id="savedAddresses" onchange="fillAddress()">
+                <option value="">Select Address</option>
+                <option value="1">Home Address</option>
+                <option value="2">Office Address</option>
+                <option value="3">Grandparents' House</option>
+            </select>
+        </div>
+
+        <h4>Personal Information</h4>
+        <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" class="form-control" id="fullName" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" required>
+        </div>
+
+        <h4 class="mt-4">Shipping Address</h4>
+        <div class="form-group">
+            <label for="address">Street Address</label>
+            <input type="text" class="form-control" id="address" required>
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" class="form-control" id="city" required>
+        </div>
+        <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" class="form-control" id="state" required>
+        </div>
+        <div class="form-group">
+            <label for="zip">Zip Code</label>
+            <input type="text" class="form-control" id="zip" required>
+        </div>
+        <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" class="form-control" id="country" required>
+        </div>
+
+        <h4 class="mt-4">Payment Information</h4>
+        <div class="form-group">
+            <label>Select Payment Method:</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentBank" value="Bank" required>
+                <label class="form-check-label" for="paymentBank">Bank Transfer</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentCod" value="Cod">
+                <label class="form-check-label" for="paymentCod">Cash on Delivery (COD)</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentCredit" value="Credit">
+                <label class="form-check-label" for="paymentCredit">Credit Card</label>
+            </div>
+        </div>
+        <div id="creditCardInfo" style="display:none;">
+            <h4 class="mt-4">Credit Card Information</h4>
+            <div class="form-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" class="form-control" id="cardNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="expirationDate">Expiration Date</label>
+                <input type="text" class="form-control" id="expirationDate" placeholder="MM/YY" required>
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" class="form-control" id="cvv" required>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Confirm Payment</button>
+        </div>
+    </form>
+</section>
+<script>
+    // Function to fill address fields based on selected saved address
+    function fillAddress() {
+        const selectedValue = document.getElementById('savedAddresses').value;
+
+        switch (selectedValue) {
+            case '1': // Home Address
+                document.getElementById('fullName').value = "John Doe";
+                document.getElementById('phone').value = "+123456789";
+                document.getElementById('address').value = "123 Fashion St";
+                document.getElementById('city').value = "Fashion City";
+                document.getElementById('state').value = "Fashion State";
+                document.getElementById('zip').value = "12345";
+                document.getElementById('country').value = "Fashionland";
+                break;
+            case '2': // Office Address
+                document.getElementById('fullName').value = "Jane Doe";
+                document.getElementById('phone').value = "+987654321";
+                document.getElementById('address').value = "456 Office Rd";
+                document.getElementById('city').value = "Business Town";
+                document.getElementById('state').value = "Business State";
+                document.getElementById('zip').value = "67890";
+                document.getElementById('country').value = "Businessland";
+                break;
+            case '3': // Grandparents' House
+                document.getElementById('fullName').value = "Grandma Doe";
+                document.getElementById('phone').value = "+135792468";
+                document.getElementById('address').value = "789 Grandma Ln";
+                document.getElementById('city').value = "Countryside";
+                document.getElementById('state').value = "Rural State";
+                document.getElementById('zip').value = "24680";
+                document.getElementById('country').value = "Countrysideland";
+                break;
+            default:
+                // Clear fields if no valid selection
+                clearAddressFields();
+                break;
+        }
+    }
+
+    // Function to clear address fields
+    function clearAddressFields() {
+        document.getElementById('fullName').value = "";
+        document.getElementById('phone').value = "";
+        document.getElementById('address').value = "";
+        document.getElementById('city').value = "";
+        document.getElementById('state').value = "";
+        document.getElementById('zip').value = "";
+        document.getElementById('country').value = "";
+    }
+
+    // Show credit card information fields when Credit Card payment method is selected
+    document.querySelectorAll('input[name="paymentMethod"]').forEach((elem) => {
+        elem.addEventListener("change", function (event) {
+            const creditCardInfo = document.getElementById('creditCardInfo');
+            if (event.target.value === "Credit") {
+                creditCardInfo.style.display = "block";
+            } else {
+                creditCardInfo.style.display = "none";
+            }
+        });
+    });
+</script>

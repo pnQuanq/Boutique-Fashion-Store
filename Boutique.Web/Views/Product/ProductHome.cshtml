@@ -1,0 +1,197 @@
+﻿@using Boutique.Web.ViewModel
+@using System.Globalization
+@model ProductHomeViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var vndCulture = new CultureInfo("vi-VN");
+}
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success">
+        @successMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+
+
+<h2>Product List</h2>
+<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Add Product Modal -->
+        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" enctype="multipart/form-data" action="@Url.Action("CreateProduct", "Product")">
+                            <!-- Product Name -->
+                            <div class="mb-3">
+                                <label for="Name" class="form-label">Name:</label>
+                                <input type="text" name="Name" id="Name" class="form-control" required />
+                            </div>
+
+                            <!-- Product Description -->
+                            <div class="mb-3">
+                                <label for="Description" class="form-label">Description:</label>
+                                <textarea name="Description" id="Description" class="form-control" required></textarea>
+                            </div>
+
+                            <!-- Product Price -->
+                            <div class="mb-3">
+                                <label for="Price" class="form-label">Price:</label>
+                                <input type="number" step="0.01" name="Price" id="Price" class="form-control" required />
+                            </div>
+
+                            <!-- Product Category -->
+                            <div class="mb-3">
+                                <label for="CategoryId" class="form-label">Category:</label>
+                                <select name="CategoryId" id="CategoryId" class="form-select" required>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <option value="@category.CategoryId">@category.Name</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- Add New Images -->
+                            <div class="mb-3">
+                                <input type="file" name="Images" multiple />
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Add Product</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @foreach (var product in Model.Products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price.ToString("C", vndCulture)</td>
+                <td>@product.Quantity</td>
+                <td>@product.CategoryName</td> <!-- Adjust based on actual property -->
+                <td>
+                    <a href="@Url.Action("Details", "Product", new { id = product.ProductId })" class="btn btn-sm btn-info">View Details</a>
+                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProductModal-@product.ProductId">Edit</button>
+                    <form action="@Url.Action("DeleteProduct", "Product", new { id = product.ProductId })" method="post" style="display:inline;">
+                        <input type="hidden" name="ProductId" value="@product.ProductId" />
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <!-- Edit Product Modal -->
+            <div class="modal fade" id="editProductModal-@product.ProductId" tabindex="-1" aria-labelledby="editProductModalLabel-@product.ProductId" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editProductModalLabel-@product.ProductId">Edit Product</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" enctype="multipart/form-data" action="@Url.Action("UpdateProduct", "Product")">
+                                <input type="hidden" name="ProductId" value="@product.ProductId" />
+                                <div class="mb-3">
+                                    <label for="Name-@product.ProductId" class="form-label">Name:</label>
+                                    <input type="text" name="Name" id="Name-@product.ProductId" class="form-control" value="@product.Name" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Description-@product.ProductId" class="form-label">Description:</label>
+                                    <textarea name="Description" id="Description-@product.ProductId" class="form-control" required>@product.Description</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Price-@product.ProductId" class="form-label">Price:</label>
+                                    <input type="number" step="0.01" name="Price" id="Price-@product.ProductId" class="form-control" value="@product.Price" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="CategoryId-@product.ProductId" class="form-label">Category:</label>
+                                    <select name="CategoryId" id="CategoryId-@product.ProductId" class="form-select" required>
+                                        @foreach (var category in Model.Categories)
+                                        {
+                                            <option value="@category.CategoryId" selected="@(product.CategoryId == category.CategoryId ? "selected" : null)">@category.Name</option>
+
+                                        }
+                                    </select>
+                                </div>
+
+                                <!-- Display existing images -->
+                                <div class="mb-3">
+                                    <label class="form-label">Existing Images:</label>
+                                    <div class="d-flex flex-wrap">
+                                        @foreach (var image in product.Images)
+                                        {
+                                            <div class="position-relative me-2 mb-2">
+                                                <img src="@Url.Content(image.ImagePath)" alt="Product Image" class="img-thumbnail" style="width: 100px; height: 100px;" />
+                                                <input type="checkbox" name="ImagesToRemove" value="@image.ProductImageId" class="form-check-input position-absolute" style="top: 0; right: 0;" title="Remove this image" />
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- Input for adding new images -->
+                                <div class="mb-3">
+                                    <label for="ImagesToAdd-@product.ProductId" class="form-label">Add New Images:</label>
+                                    <input type="file" name="ImagesToAdd" id="ImagesToAdd-@product.ProductId" class="form-control" multiple />
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </tbody>
+</table>
+<script>
+    function hideMessageAndReload(id) {
+        setTimeout(function () {
+            var messageElement = document.getElementById(id);
+            if (messageElement) {
+                messageElement.style.display = 'none';
+            }
+            location.reload();
+        }, 2000);
+    }
+
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <text>hideMessageAndReload('successMessage');</text>
+    }
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <text>hideMessageAndReload('errorMessage');</text>
+    }
+</script>

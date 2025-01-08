@@ -1,0 +1,60 @@
+﻿@using Boutique.Web.ViewModel
+@model ProductHomeViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section id="related-products" class="related-products py-5 position-relative">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-5 mb-3">
+            <h4 class="text-uppercase">All Products</h4>
+            <a href="@Url.Action("Index", "Home")" class="btn-link">Back to Home page</a>
+        </div>
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            @foreach (var product in Model.Products)
+            {
+                <div class="col">
+                    <div class="product-item image-zoom-effect link-effect">
+                        <div class="image-holder">
+                            <a href="@Url.Action("ProductDetail", "Home", new { id = product.ProductId })">
+                                <img src="@Url.Content(@product.Images.FirstOrDefault()?.ImagePath)" alt="product" class="product-image img-fluid">
+                            </a>
+                            <a href="wishlist.html" class="btn-icon btn-wishlist">
+                                <svg width="24" height="24" viewBox="0 0 24 24">
+                                    <use xlink:href="#heart"></use>
+                                </svg>
+                            </a>
+                            <div class="product-content">
+                                <h5 class="text-uppercase fs-5 mt-3">
+                                    <a href="@Url.Action("ProductDetail", "Home", new { id = product.ProductId })">@product.Name</a>
+                                </h5>
+                                <a href="cart.html" class="text-decoration-none" data-after="Add to cart"><span>@product.Price &#8363;</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Add these styles to make images fit well inside the product card -->
+<style>
+    .product-item {
+        position: relative;
+    }
+
+    .image-holder {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 400px; /* or whatever height fits your design */
+        object-fit: cover; /* This ensures the image fills the space proportionally */
+        object-position: center;
+    }
+</style>
+
+
