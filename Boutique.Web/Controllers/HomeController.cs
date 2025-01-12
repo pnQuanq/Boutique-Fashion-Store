@@ -1,4 +1,5 @@
-﻿using Boutique.Core.Services.Abstractions.Features;
+﻿using Boutique.Core.Domain.Entities;
+using Boutique.Core.Services.Abstractions.Features;
 using Boutique.Web.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,14 +35,24 @@ namespace Boutique.Web.Controllers
 
             return View(viewModel);
         }
-		[Authorize]
 		public async Task<IActionResult> ProductDetail(int id)
         {
-            var product = await _productVariantService.GetProductAndProductVariantsAsync(id);
-
-            product.UserId = User.FindFirst("sub")?.Value;
-
-			return View(product);
-        }
+			try
+			{
+				var product = await _productVariantService.GetProductAndProductVariantsAsync(id);
+				if (product == null)
+				{
+					
+					return NotFound("Product not found");
+				}
+                var model = new ProductHomeViewModel();
+                model.ProductDetail = product;
+				return View(model);
+			}
+			catch (KeyNotFoundException ex)
+			{
+				return NotFound(ex.Message);
+			}
+		}
     }
 }

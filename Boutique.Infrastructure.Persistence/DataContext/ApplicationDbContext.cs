@@ -114,11 +114,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(oi => oi.ProductVariantId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Configure Order -> Transaction (one-to-one)
         builder.Entity<Order>()
-            .HasOne(o => o.Address)
-            .WithMany()
-            .HasForeignKey(o => o.AddressId);
+            .HasOne(o => o.Transaction)
+            .WithOne(t => t.Order)
+            .HasForeignKey<Transaction>(t => t.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }

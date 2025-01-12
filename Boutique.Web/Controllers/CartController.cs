@@ -3,7 +3,7 @@ using Boutique.Core.Contracts.Cart;
 using Boutique.Core.Services.Abstractions.Features;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Boutique.Web.ViewModel;
+using Boutique.Web.ViewModel.Cart;
 
 namespace Boutique.API.Controllers
 {
@@ -18,7 +18,7 @@ namespace Boutique.API.Controllers
         {
             _cartService = cartService;
         }
-        [HttpPost]
+        [HttpPost("Add-To-Cart")]
         public async Task<IActionResult> AddToCartAsync([FromBody] AddToCartDto addToCartDto)
         {
 			if (!User.Identity.IsAuthenticated)
@@ -44,23 +44,28 @@ namespace Boutique.API.Controllers
                     return BadRequest("Failed to add item to cart");
                 }
 
-                return Ok(updatedCart);
-            }
+				return Ok(new
+				{
+					success = true,
+					cart = updatedCart
+				});
+			}
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpPut("update/{cartItemId}")]
-        public async Task<IActionResult> UpdateCartItemAsync(int cartItemId, [FromBody] UpdateCartItemDto updateDto)
+        [HttpPost("update-cart")]
+        public async Task<IActionResult> UpdateCartItemAsync([FromForm] UpdateCartItemDto updateDto)
         {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             try
             {
-                var result = await _cartService.UpdateCartItemAsync(cartItemId, updateDto);
+                var result = await _cartService.UpdateCartItemAsync(updateDto.CartItemId, updateDto);
                 if (result)
                 {
-                    var updatedCart = await _cartService.GetCartByUserIdAsync(updateDto.UserId);
-                    return Ok(updatedCart);
+                    var updatedCart = await _cartService.GetCartByUserIdAsync(uid);
+                    return RedirectToAction("CartPage", new { userId = uid });
                 }
 
                 return NotFound("Cart item not found");
@@ -96,8 +101,8 @@ namespace Boutique.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("cart/{userId}")]
-        public async Task<IActionResult> GetCartByUserIdAsync(string userId)
+        [HttpGet("cart")]
+        public async Task<IActionResult> CartPage()
         {
 			var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 			try
@@ -105,17 +110,21 @@ namespace Boutique.API.Controllers
                 var cartDto = await _cartService.GetCartByUserIdAsync(uid);
                 if (cartDto == null)
                 {
-                    return NotFound("Cart not found");
+                    return RedirectToAction("EmptyCart");
                 }
-                var model = new ProductHomeViewModel();
-                model.cartDto = cartDto;
-                return View("CartPage");
+                var model = new CartViewModel();
+                model.Cart = cartDto;
+                return View(model);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-
+        [HttpGet("empty-cart")]
+        public IActionResult EmptyCart()
+        {
+            return View();
+        }
     }
 }

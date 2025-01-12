@@ -182,8 +182,8 @@ namespace Boutique.Core.Services.Features
             {
                 throw new KeyNotFoundException("No variants found for this product");
             }
-
-            var productDto = _mapper.Map<ProductDto>(product);
+											
+			var productDto = _mapper.Map<ProductDto>(product);
             var productVariantDtos = _mapper.Map<IEnumerable<ProductVariantDto>>(productVariants);
 
             return new GetProductVariantsByProductDto

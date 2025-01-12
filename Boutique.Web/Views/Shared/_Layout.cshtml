@@ -22,8 +22,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Marcellus&display=swap"
           rel="stylesheet">
 </head>
-@using Boutique.Web.ViewModel
-@model ProductHomeViewModel;
 <body class="homepage">
     
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -356,7 +354,7 @@
                                 </a>
                             </li>
                             <li class="d-none d-lg-block">
-                                <a href="../Views/Cart/CartPage.cshtml" class="text-uppercase mx-3" aria-controls="offcanvasCart">
+                                <a href="@Url.Action("CartPage","Cart")" class="text-uppercase mx-3" aria-controls="offcanvasCart">
                                     Cart <span class="cart-count">(0)</span>
                                 </a>
                             </li>
@@ -548,28 +546,6 @@
 
         const userId = decodedToken.nameid || decodedToken.sub;
         console.log("UserID: ", userId);
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch(`/api/Cart/partial/${userId}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'text/html',
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    }
-                    throw new Error('Failed to load cart.');
-                })
-                .then(html => {
-                    document.getElementById('cartPartialContainer').innerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Error fetching cart:', error);
-                    document.getElementById('cartPartialContainer').innerHTML = '<p>Failed to load cart.</p>';
-                });
-        });
     </script>
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/plugins.js"></script>

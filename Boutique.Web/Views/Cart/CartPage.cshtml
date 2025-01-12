@@ -1,4 +1,10 @@
-﻿<section class="h-100">
+﻿@using Boutique.Web.ViewModel.Cart
+@model CartViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="h-100">
     <div class="container h-100 py-5">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-10">
@@ -7,158 +13,70 @@
                     <h3 class="fw-normal mb-0">Shopping Cart</h3>
                     <div>
                         <p class="mb-0">
-                            <span class="text-muted">Sort by:</span> <a href="#!" class="text-body">
+                            <span class="text-muted">Sort by:</span>
+                            <a href="#!" class="text-body">
                                 price <i class="fas fa-angle-down mt-1"></i>
                             </a>
                         </p>
                     </div>
                 </div>
 
-                <div class="card rounded-3 mb-4">
-                    <div class="card-body p-4">
-                        <div class="row d-flex justify-content-between align-items-center">
-                            <div class="col-md-2 col-lg-2 col-xl-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp"
-                                     class="img-fluid rounded-3" alt="Cotton T-shirt">
-                            </div>
-                            <div class="col-md-3 col-lg-3 col-xl-3">
-                                <p class="lead fw-normal mb-2">Basic T-shirt</p>
-                                <p><span class="text-muted">Size: </span>M <span class="text-muted">Color: </span>Grey</p>
-                            </div>
-                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                        onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                    <i class="fas fa-minus"></i>
-                                </button>
+                <!-- Scrollable container -->
+                <div style="max-height: 600px; overflow-y: auto;">
+                    @foreach (var item in Model.Cart.CartItems)
+                    {
+                        <div class="cart-item mb-4 p-3 rounded border">
+                            <form action="/api/Cart/update-cart" method="post" class="row d-flex justify-content-between align-items-center">
+                                <input type="hidden" name="CartItemId" value="@item.CartItemId" />
 
-                                <input id="form1" min="0" name="quantity" value="2" type="number"
-                                       class="form-control form-control-sm" />
+                                <div class="col-md-2 col-lg-2 col-xl-2">
+                                    <img src="@Url.Content(@item.ProductVariant.Product.Images.FirstOrDefault()?.ImagePath)"
+                                         class="img-fluid rounded-3" alt="@item.ProductVariant.Product.Name">
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-3">
+                                    <p class="lead fw-normal mb-2">@item.ProductVariant.Product.Name</p>
+                                    <p>
+                                        <span class="text-muted">Size: </span>@item.ProductVariant.SizeName
+                                        <span class="text-muted">Color: </span>@item.ProductVariant.ColorName
+                                    </p>
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-xl-3 d-flex align-items-center">
+                                    <button class="btn btn-link px-2" type="button"
+                                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
 
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                        onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                <h5 class="mb-0">$499.00</h5>
-                            </div>
-                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                <a href="#!" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
-                            </div>
+                                    <input id="quantity-@item.CartItemId" name="Quantity" min="0" value="@item.Quantity" type="number"
+                                           class="form-control form-control-sm mx-2" style="width: 60px;" />
+
+                                    <button class="btn btn-link px-2" type="button"
+                                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+
+                                    <button class="btn btn-primary btn-sm ms-2" type="submit">Apply</button>
+                                </div>
+                                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                    <h5 class="mb-0">@item.UnitPrice</h5>
+                                </div>
+                                <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                    <button class="btn btn-danger btn-sm remove-btn"
+                                            data-cart-item-id="@item.CartItemId" type="button">
+                                        <i class="fas fa-trash fa-lg"></i> Remove
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </div>
+                    }
                 </div>
 
-                <div class="card rounded-3 mb-4">
-                    <div class="card-body p-4">
-                        <div class="row d-flex justify-content-between align-items-center">
-                            <div class="col-md-2 col-lg-2 col-xl-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp"
-                                     class="img-fluid rounded-3" alt="Cotton T-shirt">
-                            </div>
-                            <div class="col-md-3 col-lg-3 col-xl-3">
-                                <p class="lead fw-normal mb-2">Basic T-shirt</p>
-                                <p><span class="text-muted">Size: </span>M <span class="text-muted">Color: </span>Grey</p>
-                            </div>
-                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                        onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-
-                                <input id="form1" min="0" name="quantity" value="2" type="number"
-                                       class="form-control form-control-sm" />
-
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                        onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                <h5 class="mb-0">$499.00</h5>
-                            </div>
-                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                <a href="#!" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card rounded-3 mb-4">
-                    <div class="card-body p-4">
-                        <div class="row d-flex justify-content-between align-items-center">
-                            <div class="col-md-2 col-lg-2 col-xl-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp"
-                                     class="img-fluid rounded-3" alt="Cotton T-shirt">
-                            </div>
-                            <div class="col-md-3 col-lg-3 col-xl-3">
-                                <p class="lead fw-normal mb-2">Basic T-shirt</p>
-                                <p><span class="text-muted">Size: </span>M <span class="text-muted">Color: </span>Grey</p>
-                            </div>
-                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                        onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-
-                                <input id="form1" min="0" name="quantity" value="2" type="number"
-                                       class="form-control form-control-sm" />
-
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                        onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                <h5 class="mb-0">$499.00</h5>
-                            </div>
-                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                <a href="#!" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card rounded-3 mb-4">
-                    <div class="card-body p-4">
-                        <div class="row d-flex justify-content-between align-items-center">
-                            <div class="col-md-2 col-lg-2 col-xl-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp"
-                                     class="img-fluid rounded-3" alt="Cotton T-shirt">
-                            </div>
-                            <div class="col-md-3 col-lg-3 col-xl-3">
-                                <p class="lead fw-normal mb-2">Basic T-shirt</p>
-                                <p><span class="text-muted">Size: </span>M <span class="text-muted">Color: </span>Grey</p>
-                            </div>
-                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                        onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-
-                                <input id="form1" min="0" name="quantity" value="2" type="number"
-                                       class="form-control form-control-sm" />
-
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
-                                        onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                <h5 class="mb-0">$499.00</h5>
-                            </div>
-                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                <a href="#!" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- End of scrollable container -->
 
                 <div class="card mb-4">
                     <div class="card-body p-4 d-flex flex-row">
                         <div data-mdb-input-init class="form-outline flex-fill">
                             <input type="text" id="form1" class="form-control form-control-lg" />
-                            <label class="form-label" for="form1">Discound code</label>
+                            <label class="form-label" for="form1">Discount code</label>
                         </div>
                         <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-warning btn-lg ms-3">Apply</button>
                     </div>
@@ -174,3 +92,42 @@
         </div>
     </div>
 </section>
+<style>
+    .cart-item {
+        background-color: #f9f9f9;
+        transition: box-shadow 0.3s ease;
+    }
+
+        .cart-item:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const removeButtons = document.querySelectorAll('.remove-btn');
+        removeButtons.forEach(button => {
+            button.addEventListener('click', async function () {
+                const cartItemId = this.getAttribute('data-cart-item-id');
+                const confirmed = confirm('Are you sure you want to remove this item?');
+                if (confirmed) {
+                    try {
+                        const response = await fetch(`/api/Cart/remove/${cartItemId}`, {
+                            method: 'DELETE',
+                        });
+                        if (response.ok) {
+                            alert('Item removed successfully.');
+                            location.reload();
+                        } else {
+                            const errorText = await response.text();
+                            alert(`Failed to remove item: ${errorText}`);
+                        }
+                    } catch (error) {
+                        console.error('Error removing item:', error);
+                        alert('An error occurred while removing the item.');
+                    }
+                }
+            });
+        });
+    });
+</script>

@@ -19,11 +19,18 @@ namespace Boutique.Infrastructure.Persistence.Repositories
         public async Task<Cart> GetCartWithItemsByUserIdAsync(string userId)
         {
             return await _context.Carts
-                .Include(c => c.CartItems)
-                    .ThenInclude(ci => ci.ProductVariant)
-                        .ThenInclude(pv => pv.Product)
-                            .FirstOrDefaultAsync(c => c.UserId == userId);
-        }
+				.Include(c => c.CartItems)
+					.ThenInclude(ci => ci.ProductVariant)
+						.ThenInclude(pv => pv.Product)
+							.ThenInclude(p => p.Category)
+				.Include(c => c.CartItems)
+					.ThenInclude(ci => ci.ProductVariant)
+						.ThenInclude(pv => pv.Size)
+				.Include(c => c.CartItems)
+					.ThenInclude(ci => ci.ProductVariant)
+						.ThenInclude(pv => pv.Color)
+				.FirstOrDefaultAsync(c => c.UserId == userId);
+		}
         public async Task<CartItem> GetCartItemByIdAsync(int cartItemId)
         {
             return await _context.CartItems
