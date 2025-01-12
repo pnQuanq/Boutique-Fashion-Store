@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Boutique.Core.Domain.Entities;
 using Boutique.Infrastructure.Persistence.DataContext;
-using WeVibe.Core.Domain.Repositories;
+using Boutique.Core.Domain.Repositories;
 
 namespace Boutique.Infrastructure.Persistence.Repositories
 {
@@ -25,7 +25,6 @@ namespace Boutique.Infrastructure.Persistence.Repositories
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.ProductVariant)
                         .ThenInclude(pv => pv.Color)
-                .Include(o => o.Transaction)
                 .ToListAsync();
         }
 
@@ -42,7 +41,6 @@ namespace Boutique.Infrastructure.Persistence.Repositories
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.ProductVariant)
                         .ThenInclude(pv => pv.Color)
-                .Include(o => o.Transaction)
                 .FirstOrDefaultAsync();
         }
         public async Task<List<Order>> GetAllWithDetailsAsync()
@@ -57,7 +55,6 @@ namespace Boutique.Infrastructure.Persistence.Repositories
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.ProductVariant)
                         .ThenInclude(pv => pv.Color)
-                .Include(o => o.Transaction)
                 .ToListAsync();
         }
 

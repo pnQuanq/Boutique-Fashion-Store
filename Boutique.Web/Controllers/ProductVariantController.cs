@@ -3,7 +3,7 @@ using Boutique.Core.Contracts.ProductVariant;
 using Boutique.Core.Services.Abstractions.Features;
 using Boutique.Web.ViewModel.ProductVariant;
 
-namespace Boutique.API.Controllers
+namespace Boutique.Web.Controllers
 {
     public class ProductVariantController : Controller
     {

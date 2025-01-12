@@ -3,7 +3,7 @@ using Boutique.Core.Contracts.Category;
 using Boutique.Core.Services.Abstractions.Features;
 using Boutique.Web.ViewModel;
 
-namespace Boutique.API.Controllers
+namespace Boutique.Web.Controllers
 {
     public class CategoryController : Controller
     {

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Boutique.Web.ViewModel.Cart;
 
-namespace Boutique.API.Controllers
+namespace Boutique.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

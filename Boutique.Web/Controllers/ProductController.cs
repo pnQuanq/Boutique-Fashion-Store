@@ -5,7 +5,7 @@ using Boutique.Core.Services.Exceptions;
 using Boutique.Web.ViewModel;
 using Boutique.Web.ViewModel.Product;
 
-namespace Boutique.API.Controllers
+namespace Boutique.Web.Controllers
 {
     public class ProductController : Controller
     {

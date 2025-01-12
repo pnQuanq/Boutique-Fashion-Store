@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Boutique.Core.Domain\Boutique.Core.Domain.csproj" />
-    <ProjectReference Include="..\Boutique.Core.Services\Boutique.Core.Services.csproj" />
   </ItemGroup>
 
 </Project>

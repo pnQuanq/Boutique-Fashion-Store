@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Boutique.Core.Domain\Boutique.Core.Domain.csproj" />
     <ProjectReference Include="..\Boutique.Core.Services.Abstractions\Boutique.Core.Services.Abstractions.csproj" />
+    <ProjectReference Include="..\Boutique.Infrastructure.Persistence\Boutique.Infrastructure.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

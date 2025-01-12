@@ -1,7 +1,5 @@
-﻿using Boutique.Core.Domain.Entities;
-using Boutique.Core.Services.Abstractions.Features;
+﻿using Boutique.Core.Services.Abstractions.Features;
 using Boutique.Web.ViewModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Boutique.Web.Controllers

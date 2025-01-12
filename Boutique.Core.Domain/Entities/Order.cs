@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Boutique.Core.Domain.Common;
+﻿using Boutique.Core.Domain.Common;
 
 namespace Boutique.Core.Domain.Entities
 {
@@ -9,12 +6,13 @@ namespace Boutique.Core.Domain.Entities
     {
         public int OrderId { get; set; }
         public decimal TotalAmount { get; set; }
-        public required string Status { get; set; }
+        public required string OrderStatus { get; set; }
+        public string PaymentStatus { get; set; }
         public required string UserId { get; set; }
         public ApplicationUser User { get; set; }
         public string RecipientName { get; set; }
         public string AddressValue { get; set; }
+        public string PhoneNumber { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-        public Transaction Transaction { get; set; }
     }
 }

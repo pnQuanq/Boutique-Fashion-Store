@@ -24,7 +24,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<ProductVariant> ProductVariants { get; set; }
     public DbSet<Size> Sizes { get; set; }
-    public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -113,12 +112,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(p => p.OrderItems)
             .HasForeignKey(oi => oi.ProductVariantId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<Order>()
-            .HasOne(o => o.Transaction)
-            .WithOne(t => t.Order)
-            .HasForeignKey<Transaction>(t => t.OrderId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }

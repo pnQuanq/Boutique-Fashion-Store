@@ -30,14 +30,15 @@ namespace Boutique.Infrastructure.Persistence
             services.AddScoped<IProductImageRepository, ProductImageRepository>();
             services.AddScoped<ISizeRepository, SizeRepository>();
             services.AddScoped<IColorRepository, ColorRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
             // Register Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                options.Password.RequireDigit = false; // Remove requirement for a digit
-                options.Password.RequiredLength = 6; // Minimum length (adjust as needed)
-                options.Password.RequireLowercase = false; // Remove requirement for a lowercase letter
-                options.Password.RequireUppercase = false; // Remove requirement for an uppercase letter
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = false; 
+                options.Password.RequireUppercase = false; 
                 options.Password.RequireNonAlphanumeric = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()

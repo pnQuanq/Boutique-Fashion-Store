@@ -3,7 +3,7 @@ using Boutique.Core.Contracts.Discount;
 using Boutique.Core.Services.Abstractions.Features;
 
 
-namespace Boutique.API.Controllers
+namespace Boutique.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

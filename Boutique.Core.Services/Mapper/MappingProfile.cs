@@ -2,6 +2,7 @@
 using Boutique.Core.Contracts.Cart;
 using Boutique.Core.Contracts.Category;
 using Boutique.Core.Contracts.Discount;
+using Boutique.Core.Contracts.Order;
 using Boutique.Core.Contracts.Product;
 using Boutique.Core.Contracts.ProductVariant;
 using Boutique.Core.Domain.Entities;
@@ -52,6 +53,15 @@ namespace Boutique.Core.Services.Mapper
             CreateMap<CreateDiscountDto, Discount>();
 
             CreateMap<Discount, DiscountDto>().ReverseMap();
+            //Order Mapping Profile
+            CreateMap<Order, OrderDto>()
+            .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems));
+
+            // Map OrderItem to OrderItemDto
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product))
+                .ForMember(dest => dest.SizeName, opt => opt.MapFrom(src => src.ProductVariant.Size.Name))
+                .ForMember(dest => dest.ColorName, opt => opt.MapFrom(src => src.ProductVariant.Color.Name));
         }
     }
 }

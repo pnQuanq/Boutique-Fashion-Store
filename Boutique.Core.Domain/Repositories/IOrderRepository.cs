@@ -1,7 +1,7 @@
 ﻿using Boutique.Core.Domain.Entities;
 using Boutique.Core.Domain.Repositories;
 
-namespace WeVibe.Core.Domain.Repositories
+namespace Boutique.Core.Domain.Repositories
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {

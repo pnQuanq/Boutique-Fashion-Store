@@ -1,0 +1,116 @@
+﻿<!-- Order Tracking Section -->
+<section class="container my-5">
+    <h2 class="text-center">Order Tracking</h2>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Email</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody id="orderList">
+                    <tr>
+                        <td>#1001</td>
+                        <td>John Doe</td>
+                        <td>john.doe@example.com</td>
+                        <td>$109.97</td>
+                        <td><span class="badge badge-warning" id="status-1001">Pending</span></td>
+                        <td>
+                            <div class="input-group">
+                                <select class="form-control" id="statusSelect-1001">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Processing">Processing</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" onclick="confirmUpdateStatus(1001)">Update</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#1002</td>
+                        <td>Jane Smith</td>
+                        <td>jane.smith@example.com</td>
+                        <td>$89.99</td>
+                        <td><span class="badge badge-success" id="status-1002">Shipped</span></td>
+                        <td>
+                            <div class="input-group">
+                                <select class="form-control" id="statusSelect-1002">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Processing">Processing</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" onclick="confirmUpdateStatus(1002)">Update</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#1003</td>
+                        <td>Bob Johnson</td>
+                        <td>bob.johnson@example.com</td>
+                        <td>$49.99</td>
+                        <td><span class="badge badge-danger" id="status-1003">Cancelled</span></td>
+                        <td>
+                            <div class="input-group">
+                                <select class="form-control" id="statusSelect-1003">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Processing">Processing</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" onclick="confirmUpdateStatus(1003)">Update</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<script>
+    function confirmUpdateStatus(orderId) {
+        const statusSelect = document.getElementById(`statusSelect-${orderId}`);
+        const selectedStatus = statusSelect.value;
+        const statusBadge = document.getElementById(`status-${orderId}`);
+
+        // Update the badge text and color
+        statusBadge.textContent = selectedStatus;
+
+        switch (selectedStatus) {
+            case "Pending":
+                statusBadge.className = "badge badge-warning";
+                break;
+            case "Processing":
+                statusBadge.className = "badge badge-primary";
+                break;
+            case "Shipped":
+                statusBadge.className = "badge badge-info";
+                break;
+            case "Delivered":
+                statusBadge.className = "badge badge-success";
+                break;
+            case "Cancelled":
+                statusBadge.className = "badge badge-danger";
+                break;
+        }
+
+        // Here you can also send an AJAX request to update the status in your database
+        console.log(`Order ${orderId} status updated to ${selectedStatus}`);
+    }
+</script>
