@@ -9,6 +9,8 @@ namespace Boutique.Web.ViewModel
     {
         public IEnumerable<ProductDto> Products { get; set; } = new List<ProductDto>();
         public IEnumerable<CategoryDto> Categories { get; set; } = new List<CategoryDto>();
+        public CategoryDto SelectedCategory { get; set; }
+        public int SelectedGender { get; set; }
         public GetProductVariantsByProductDto ProductDetail {  get; set; }
     }
 }

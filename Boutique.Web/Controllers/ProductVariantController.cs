@@ -2,6 +2,7 @@
 using Boutique.Core.Contracts.ProductVariant;
 using Boutique.Core.Services.Abstractions.Features;
 using Boutique.Web.ViewModel.ProductVariant;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Boutique.Web.Controllers
 {
@@ -16,6 +17,7 @@ namespace Boutique.Web.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
+        [Authorize(Policy = "Admin")]
         [HttpGet]
         public async Task<IActionResult> ProductVariantHome()
         {
@@ -31,6 +33,7 @@ namespace Boutique.Web.Controllers
 
             return View(viewModel);
         }
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateProductVariant(CreateProductVariantDto createDto)
         {

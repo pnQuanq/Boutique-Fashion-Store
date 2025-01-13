@@ -1,5 +1,6 @@
 using Boutique.Core.Services;
 using Boutique.Infrastructure.Persistence;
+using Boutique.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,10 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    await SeedData.InitializeAsync(scope.ServiceProvider);
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

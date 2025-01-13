@@ -1,0 +1,70 @@
+﻿@using Boutique.Web.ViewModel.Admin
+@model OrderManagementViewModel
+<!-- Order Tracking Section -->
+<section class="container my-5">
+    <h2 class="text-center">Order Tracking</h2>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Address</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody id="orderList">
+                    @foreach (var order in Model.Orders)
+                    {
+                        <tr>
+                            <td><a href="@Url.Action("OrderDetail", "Order", new { orderId = order.OrderId })">#@order.OrderId</a></td>
+                            <td>@order.RecipientName</td>
+                            <td>@order.AddressValue</td>
+                            <td>@string.Format("{0:N0}đ", @order.TotalAmount)</td>
+                            <td><span class="badge badge-info" id="status-@order.OrderId">@order.OrderStatus</span></td>
+                            <td>
+                                <form method="post" action="@Url.Action("UpdateOrderStatus", "Admin")" id="form-@order.OrderId">
+                                    <input type="hidden" name="OrderId" value="@order.OrderId" />
+                                    <input type="hidden" name="Status" id="statusInput-@order.OrderId" value="@order.OrderStatus" />
+                                    <div class="input-group">
+                                        <select class="form-control" id="statusSelect-@order.OrderId" data-order-status="@order.OrderStatus" onchange="updateStatus(@order.OrderId)">
+                                            <option value="" disabled selected>-- Select --</option>
+                                            <option value="Order Confirmed">Order Confirmed</option>
+                                            <option value="Processing">Processing</option>
+                                            <option value="Shipped">Shipped</option>
+                                            <option value="Delivered">Delivered</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+    function updateStatus(orderId) {
+        const statusSelect = document.getElementById(`statusSelect-${orderId}`);
+        const selectedStatus = statusSelect.value;
+
+        if (selectedStatus === "") {
+            return;
+        }
+
+        const statusInput = document.getElementById(`statusInput-${orderId}`);
+        statusInput.value = selectedStatus;
+
+        const statusBadge = document.getElementById(`status-${orderId}`);
+        statusBadge.textContent = selectedStatus;
+    }
+</script>

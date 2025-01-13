@@ -3,6 +3,7 @@ using Boutique.Core.Contracts.Order;
 using Boutique.Core.Domain.Entities;
 using Boutique.Core.Services.Abstractions.Features;
 using Boutique.Web.ViewModel.Cart;
+using Boutique.Web.ViewModel.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -32,7 +33,6 @@ namespace Boutique.Web.Controllers
 
             try
             {
-                // Fetch the user's cart using the service
                 var cart = await _cartService.GetCartByUserIdAsync(uid);
 
                 if (cart == null || !cart.CartItems.Any())
@@ -81,7 +81,7 @@ namespace Boutique.Web.Controllers
 
                 var orderDto = await _orderService.CreateOrderAsync(uid, createOrderDto);
 
-                return View("TrackOrder");
+                return RedirectToAction("TrackOrder");
             }
             catch (Exception ex)
             {
@@ -89,10 +89,32 @@ namespace Boutique.Web.Controllers
             }
         }
         [HttpGet]
-        public IActionResult TrackOrder()
+        public async Task<IActionResult> TrackOrder()
         {
-            return View();
-        }
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            var orderHistory = new List<OrderHistoryDto>();
+
+            if (!string.IsNullOrEmpty(uid))
+            {
+
+                orderHistory = await _orderService.GetOrderHistoryAsync(uid) ?? new List<OrderHistoryDto>();
+            }
+
+            var model = new OrderHistoryViewModel
+            {
+                OrderHistory = orderHistory
+            };
+
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> OrderDetail(int orderId)
+        {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            var model = new OrderHistoryViewModel();
+            model.Order = order;
+            return View(model);
+        }
     }
 }

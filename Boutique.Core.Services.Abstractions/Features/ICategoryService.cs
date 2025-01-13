@@ -5,8 +5,9 @@ namespace Boutique.Core.Services.Abstractions.Features
 {
     public interface ICategoryService
     {
-        Task<Category> GetCategoryByIdAsync(int id);
+        Task<CategoryDto> GetCategoryByIdAsync(int id);
         Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
+        Task<IEnumerable<Category>> GetAllCategoriesForRemcommendAsync();
         Task<CategoryDto> AddCategoryAsync(CreateCategoryDto createCategoryDto);
         Task<string> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto);
         Task DeleteCategoryAsync(int id);

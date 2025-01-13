@@ -4,6 +4,7 @@ using Boutique.Core.Services.Abstractions.Features;
 using Boutique.Core.Services.Exceptions;
 using Boutique.Web.ViewModel;
 using Boutique.Web.ViewModel.Product;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Boutique.Web.Controllers
 {
@@ -18,6 +19,7 @@ namespace Boutique.Web.Controllers
             _categoryService = categoryService;
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpGet]
         public async Task<IActionResult> ProductHome()
         {
@@ -32,6 +34,7 @@ namespace Boutique.Web.Controllers
 
             return View(viewModel);
         }
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
         {
@@ -48,6 +51,7 @@ namespace Boutique.Web.Controllers
                 return RedirectToAction("ProductHome");
             }
         }
+        [Authorize(Policy = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -128,6 +132,6 @@ namespace Boutique.Web.Controllers
         {
             return View();
         }
-
+       
     }
 }

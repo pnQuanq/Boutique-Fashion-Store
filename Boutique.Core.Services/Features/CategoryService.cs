@@ -16,9 +16,10 @@ namespace Boutique.Core.Services.Features
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
-        public async Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<CategoryDto> GetCategoryByIdAsync(int id)
         {
-            return await _categoryRepository.GetByIdAsync(id);
+            var cate =  await _categoryRepository.GetByIdAsync(id);
+            return _mapper.Map<CategoryDto>(cate);
         }
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
@@ -26,7 +27,11 @@ namespace Boutique.Core.Services.Features
             var categories = await _categoryRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<CategoryDto>>(categories);
         }
-
+        public async Task<IEnumerable<Category>> GetAllCategoriesForRemcommendAsync()
+        {
+            var categories = await _categoryRepository.GetAllAsync();
+            return categories;
+        }
         public async Task<CategoryDto> AddCategoryAsync(CreateCategoryDto createCategoryDto)
         {
             var category = _mapper.Map<Category>(createCategoryDto);

@@ -6,8 +6,11 @@ namespace Boutique.Core.Domain.Entities
     {
         public int OrderId { get; set; }
         public decimal TotalAmount { get; set; }
+        public decimal SubTotal {  get; set; }
+        public decimal DeliveryFee { get; set; }
         public required string OrderStatus { get; set; }
         public string PaymentStatus { get; set; }
+        public string PaymentMethod { get; set; }
         public required string UserId { get; set; }
         public ApplicationUser User { get; set; }
         public string RecipientName { get; set; }

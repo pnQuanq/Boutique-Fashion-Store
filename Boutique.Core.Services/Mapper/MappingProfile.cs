@@ -62,6 +62,18 @@ namespace Boutique.Core.Services.Mapper
                 .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product))
                 .ForMember(dest => dest.SizeName, opt => opt.MapFrom(src => src.ProductVariant.Size.Name))
                 .ForMember(dest => dest.ColorName, opt => opt.MapFrom(src => src.ProductVariant.Color.Name));
+
+            CreateMap<Order, OrderHistoryDto>()
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalAmount))
+            .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => src.PaymentStatus))
+            .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.DateCreated)) // Assuming CreatedAt is the order date
+            .ForMember(dest => dest.AddressValue, opt => opt.MapFrom(src => src.AddressValue))
+            .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentStatus)) // Assuming PaymentMethod is same as PaymentStatus, adjust as needed
+            .ForMember(dest => dest.PayAmount, opt => opt.MapFrom(src => src.TotalAmount))
+            .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.OrderStatus))
+            .ForMember(dest => dest.RecipientName, opt => opt.MapFrom(src => src.RecipientName))
+            .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems));
         }
     }
 }

@@ -147,5 +147,60 @@ namespace Boutique.Core.Services.Features
 
             return $"Product with ID {productId} has been successfully deleted.";
         }
+        public async Task<IEnumerable<Product>> GetAllProductsForRecomendSystemAsync()
+        {
+            var products = await _productRepository.GetAllWithCategoryAsync();
+            return products;
+        }
+        public async Task<IEnumerable<ProductDto>> GetRecentProductsAsync(int count)
+        {
+            var products =  await _productRepository.GetGetRecentProductsAsync(count);
+            return products.Select(product => new ProductDto
+            {
+                ProductId = product.ProductId,
+                Name = product.Name,
+                Images = _mapper.Map<ICollection<ProductImageDto>>(product.Images),
+                Description = product.Description,
+                Price = product.Price,
+                Quantity = product.Quantity,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category.Name
+            });
+        }
+        public async Task<IEnumerable<ProductDto>> GetProductsByCategoryAndGenderAsync(int categoryId, int gender)
+        {
+            var products = await _productRepository.GetProductsByCategoryAndGenderAsync(categoryId, gender);
+
+            return _mapper.Map<IEnumerable<ProductDto>>(products);
+        }
+        public async Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(int categoryId)
+        {
+            var products = await _productRepository.GetProductsByCategoryAsync(categoryId);
+
+            return _mapper.Map<IEnumerable<ProductDto>>(products);
+        }
+        public async Task<IEnumerable<ProductDto>> GetProductsByGenderAsync(int gender)
+        {
+            var products = await _productRepository.GetAllWithCategoryAsync();
+            products = products.Where(p => p.Category.Gender == gender)
+                            .ToList();
+            return _mapper.Map<IEnumerable<ProductDto>>(products);
+        }
+        public async Task<List<ProductDto>> SearchProductsByNameAsync(string searchString)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                throw new ArgumentException("Search string cannot be empty.", nameof(searchString));
+            }
+
+            var products = await _productRepository.SearchProductsByNameAsync(searchString);
+
+            if (!products.Any())
+            {
+                throw new Exception($"No products found containing '{searchString}'.");
+            }
+
+            return _mapper.Map<List<ProductDto>>(products);
+        }
     }
 }

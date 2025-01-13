@@ -57,6 +57,5 @@ namespace Boutique.Infrastructure.Persistence.Repositories
                         .ThenInclude(pv => pv.Color)
                 .ToListAsync();
         }
-
     }
 }

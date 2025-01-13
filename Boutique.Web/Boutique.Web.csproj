@@ -29,4 +29,11 @@
     <ProjectReference Include="..\Boutique.Infrastructure.Persistence\Boutique.Infrastructure.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Admin\AdminTrackOrder.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

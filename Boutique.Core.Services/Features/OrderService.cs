@@ -39,10 +39,14 @@ namespace Boutique.Core.Services.Features
                 throw new Exception("Cart is empty or not found.");
             }
 
-            decimal totalAmount = 0;
+            var subTotal = cart.CartItems.Sum(item => item.UnitPrice * item.Quantity);
+
+            decimal deliveryFee = subTotal > 100000 ? 15000 : 30000;
+
+            var totalCost = subTotal + deliveryFee;
+
             foreach (var cartItem in cart.CartItems)
             {
-                totalAmount += cartItem.UnitPrice * cartItem.Quantity;
 
                 var productVariant = await _productVariantRepository.GetByIdAsync(cartItem.ProductVariantId);
 
@@ -68,8 +72,11 @@ namespace Boutique.Core.Services.Features
 
             var order = new Order
             {
-                TotalAmount = totalAmount,
+                TotalAmount = totalCost,
+                SubTotal = subTotal,
+                DeliveryFee = deliveryFee,
                 PaymentStatus = status,
+                PaymentMethod = dto.PaymentMethod,
                 OrderStatus = "Order Confirmed",
                 UserId = uid,
                 AddressValue = dto.AddressName,
@@ -80,7 +87,8 @@ namespace Boutique.Core.Services.Features
                     ProductId = ci.ProductVariant.ProductId,
                     Quantity = ci.Quantity,
                     UnitPrice = ci.ProductVariant.Product.Price,
-                    ProductVariantId = ci.ProductVariantId
+                    ProductVariantId = ci.ProductVariantId,
+                    Product = ci.ProductVariant.Product,
                 }).ToList()
             };
 
@@ -93,11 +101,11 @@ namespace Boutique.Core.Services.Features
 
             return orderDto;
         }
-        public async Task<IEnumerable<OrderHistoryDto>> GetOrderHistoryAsync(string userId)
+        public async Task<List<OrderHistoryDto>> GetOrderHistoryAsync(string userId)
         {
             var orders = await _orderRepository.GetOrdersWithTransactionsByUserIdAsync(userId);
 
-            var orderHistoryDtos = _mapper.Map<IEnumerable<OrderHistoryDto>>(orders);
+            var orderHistoryDtos = _mapper.Map<List<OrderHistoryDto>>(orders);
 
             return orderHistoryDtos;
         }
@@ -118,15 +126,15 @@ namespace Boutique.Core.Services.Features
             var orders = await _orderRepository.GetAllWithDetailsAsync();
             return _mapper.Map<List<OrderDto>>(orders);
         }
-        public async Task<OrderDto> UpdateOrderStatusAsync(int orderId, string status)
+        public async Task<OrderDto> UpdateOrderStatusAsync(UpdateOrderStatusDto dto)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId);
+            var order = await _orderRepository.GetByIdAsync(dto.OrderId);
             if (order == null) throw new Exception("Order not found.");
 
-            //order.Status = status;
+            order.OrderStatus = dto.Status;
             await _orderRepository.UpdateAsync(order);
 
-            return await GetOrderByIdAsync(orderId);
+            return await GetOrderByIdAsync(order.OrderId);
         }
 
         public async Task DeleteOrderAsync(int orderId)
@@ -140,6 +148,11 @@ namespace Boutique.Core.Services.Features
 
             await _orderRepository.DeleteAsync(order.OrderId);
             await _orderRepository.SaveAsync();
+        }
+        public async Task<IEnumerable<Order>> GetOrderHistoryByUserIdAsync(string userId)
+        {
+            var orders = await _orderRepository.GetOrdersWithTransactionsByUserIdAsync(userId);
+            return orders;
         }
     }
 }

@@ -20,7 +20,14 @@ namespace Boutique.Infrastructure.Persistence
             {
                 options.UseSqlServer(configuration.GetConnectionString("BoutiqueStoreDb"));
             });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireRole("Admin");
 
+                });
+            });
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();

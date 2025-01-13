@@ -61,7 +61,5 @@ namespace Boutique.Web.Controllers
                 return RedirectToAction("Login");
             }
         }
-
-
     }
 }
