@@ -13,6 +13,7 @@ namespace Boutique.Core.Services.Features
         private readonly IProductImageRepository _productImageRepository;
         private readonly IMapper _mapper;
         private readonly string _imageFolderPath = "wwwroot/images/products";
+        private Dictionary<string, double> _termWeights = new();
         public ProductService(IProductRepository productRepository, IProductImageRepository productImageRepository, IMapper mapper)
         {
             _productRepository = productRepository;
@@ -186,21 +187,108 @@ namespace Boutique.Core.Services.Features
                             .ToList();
             return _mapper.Map<IEnumerable<ProductDto>>(products);
         }
+        //public async Task<List<ProductDto>> SearchProductsByNameAsync(string searchString)
+        //{
+        //    if (string.IsNullOrWhiteSpace(searchString))
+        //    {
+        //        throw new ArgumentException("Search string cannot be empty.", nameof(searchString));
+        //    }
+
+        //    var products = await _productRepository.SearchProductsByNameAsync(searchString);
+
+        //    if (!products.Any())
+        //    {
+        //        throw new Exception($"No products found containing '{searchString}'.");
+        //    }
+
+        //    return _mapper.Map<List<ProductDto>>(products);
+        //}
+        public async Task InitializeAutoTFSWeightsAsync()
+        {
+            //Lấy toàn bộ sản phẩm
+            var products = await _productRepository.GetAllWithCategoryAsync();
+
+            var keywordCounts = new Dictionary<string, int>();
+            int total = 0;
+
+            foreach (var p in products)
+            {
+                var text = $"{p.Name} {p.Category?.Name}".ToLower();
+                var words = text.Split(new[] { ' ', '-', '_', '.', ',', ':' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+
+                foreach (var word in words)
+                {
+                    if (!keywordCounts.ContainsKey(word))
+                        keywordCounts[word] = 0;
+
+                    keywordCounts[word]++;
+                    total++;
+                }
+            }
+
+            _termWeights = keywordCounts.ToDictionary(
+                x => x.Key,
+                x => (double)x.Value / total
+            );
+        }
+
         public async Task<List<ProductDto>> SearchProductsByNameAsync(string searchString)
         {
             if (string.IsNullOrWhiteSpace(searchString))
-            {
                 throw new ArgumentException("Search string cannot be empty.", nameof(searchString));
-            }
 
-            var products = await _productRepository.SearchProductsByNameAsync(searchString);
+            var allProducts = await _productRepository.GetAllWithCategoryAsync(); // đảm bảo có Category
 
-            if (!products.Any())
+            if (!allProducts.Any())
+                throw new Exception("No products available.");
+
+            var keywords = searchString.ToLower()
+                .Split(new[] { ' ', ',', '.', '-', '_', ':' }, StringSplitOptions.RemoveEmptyEntries)
+                .Distinct()
+                .ToList();
+
+            var ranked = allProducts
+                .Select(p => new
+                {
+                    Product = p,
+                    Score = CalculateNBEMScore(p, keywords)
+                })
+                .Where(x => x.Score > 0)
+                .OrderByDescending(x => x.Score)
+                .Select(x => x.Product)
+                .ToList();
+
+            if (!ranked.Any())
+                throw new Exception($"No products found related to '{searchString}'.");
+
+            return _mapper.Map<List<ProductDto>>(ranked);
+        }
+
+        private double CalculateNBEMScore(Product product, List<string> keywords)
+        {
+            double score = 0;
+
+            foreach (var kw in keywords)
             {
-                throw new Exception($"No products found containing '{searchString}'.");
+                double weight = _termWeights.TryGetValue(kw, out var w) ? w : 0.01;
+
+                // Bernoulli: product name
+                if (product.Name?.ToLower().Contains(kw) == true)
+                    score += 0.3 * weight;
+
+                // Categorical: category name
+                if (product.Category?.Name?.ToLower().Contains(kw) == true)
+                    score += 0.5 * weight;
+
+                // Gaussian: giá (nếu từ khóa là số)
+                if (decimal.TryParse(kw, out decimal targetPrice))
+                {
+                    var diff = Math.Abs(product.Price - targetPrice);
+                    score += 0.2 * weight * (1.0 / (1.0 + (double)diff));
+                }
             }
 
-            return _mapper.Map<List<ProductDto>>(products);
+            return score;
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Boutique.Core.Services.Abstractions.Features;
 using Boutique.Core.Services.Features;
 using Boutique.Core.Services.Mapper;
+using Boutique.Core.Services.Features.ProductSearchService;
 
 namespace Boutique.Core.Services
 {
@@ -21,6 +22,7 @@ namespace Boutique.Core.Services
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IRecommendationService, RecommendationService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductSearchService, ProductSearchService>();
             return services;
         }
     }

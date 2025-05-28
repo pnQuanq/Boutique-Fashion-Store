@@ -109,7 +109,6 @@ namespace Boutique.Core.Services.Features
                 }
             }
 
-            // Handle sparse data
             userProfile.MostFrequentCategory = categoryCount.OrderByDescending(c => c.Value)
                                                              .FirstOrDefault().Key ?? "DefaultCategory";
 
@@ -119,7 +118,7 @@ namespace Boutique.Core.Services.Features
                                          .Where(i => i.Product?.Category != null)
                                          .GroupBy(i => i.Product.Category.Gender)
                                          .OrderByDescending(g => g.Count())
-                                         .FirstOrDefault()?.Key ?? 0; // Default gender value
+                                         .FirstOrDefault()?.Key ?? 0;
             userProfile.PreferredGender = preferredGender;
 
             return userProfile;
@@ -145,13 +144,11 @@ namespace Boutique.Core.Services.Features
 
             double categorySimilarity = userCategoryVector.Zip(productCategoryVector, (a, b) => a * b).Sum();
 
-            // Assign higher weight to price and gender similarity if category similarity is sparse
             double priceDifference = Math.Abs(userProfile.AveragePrice - productProfile.Price);
             double priceSimilarity = 1 - (priceDifference / (userProfile.AveragePrice + productProfile.Price + 1)); // Normalize
 
             double genderSimilarity = userProfile.PreferredGender == productProfile.Gender ? 1 : 0;
 
-            // Weights can be adjusted based on experiments
             return (0.5 * categorySimilarity) + (0.3 * priceSimilarity) + (0.2 * genderSimilarity);
         }
 

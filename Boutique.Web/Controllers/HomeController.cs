@@ -14,16 +14,19 @@ namespace Boutique.Web.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IProductVariantService _productVariantService;
         private readonly IRecommendationService _recommendationService;
+        private readonly IProductSearchService _productSearchService;
 
         public HomeController(IProductService productService,
                               ICategoryService categoryService,
                               IProductVariantService productVariantService,
-                              IRecommendationService recommendationService)
+                              IRecommendationService recommendationService,
+                              IProductSearchService productSearchService)
         {
             _productService = productService;
             _categoryService = categoryService;
             _productVariantService = productVariantService;
             _recommendationService = recommendationService;
+            _productSearchService = productSearchService;
         }
         public async Task<IActionResult> Index()
         {
@@ -48,26 +51,37 @@ namespace Boutique.Web.Controllers
         {
             IEnumerable<ProductDto> products = Enumerable.Empty<ProductDto>();
             var selectedCategory = new CategoryDto();
-            var selectedGender = 2;
-
+            var selectedGender = gender; // Sử dụng giá trị gender được truyền vào
             var categories = await _categoryService.GetAllCategoriesAsync();
-            var model = new ProductHomeViewModel();
 
-            if (searchString != null)
+            // Xử lý search
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                products = await _productService.SearchProductsByNameAsync(searchString);
+                products = await _productSearchService.SearchProductsByNameAsync(searchString);
                 selectedCategory.Name = "All Categories";
-                model.Products = products;
-                model.Categories = categories;
-                model.SelectedCategory = selectedCategory;
-                return View(model);
+
+                // Nếu có gender filter trong search, lọc theo category của gender đó
+                if (gender != 2) // 2 là "All"
+                {
+                    var genderCategories = categories.Where(c => c.Gender == gender).Select(c => c.CategoryId);
+                    products = products.Where(p => genderCategories.Contains(p.CategoryId));
+                }
+
+                var searchModel = new ProductHomeViewModel
+                {
+                    Products = products,
+                    Categories = categories,
+                    SelectedCategory = selectedCategory,
+                    SelectedGender = selectedGender
+                };
+                return View(searchModel);
             }
 
+            // Xử lý các trường hợp khác
             if ((categoryId == null || categoryId == 0) && gender != 2)
             {
                 products = await _productService.GetProductsByGenderAsync(gender);
                 selectedCategory.Name = "All Categories";
-                selectedGender = gender;
             }
             else if (categoryId == null || categoryId == 0)
             {
@@ -83,16 +97,14 @@ namespace Boutique.Web.Controllers
             {
                 products = await _productService.GetProductsByCategoryAndGenderAsync(categoryId.Value, gender);
                 selectedCategory = await _categoryService.GetCategoryByIdAsync(categoryId.Value);
-                selectedGender = gender;
             }
-
 
             var viewModel = new ProductHomeViewModel
             {
                 Products = products,
                 Categories = categories,
                 SelectedCategory = selectedCategory,
-                SelectedGender = selectedGender,
+                SelectedGender = selectedGender
             };
 
             return View(viewModel);

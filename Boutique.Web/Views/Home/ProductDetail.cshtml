@@ -38,7 +38,7 @@
 					<div class="mt-2 pr-3 content">
 						<p>@Model.ProductDetail.Product.Description</p>
 					</div>	
-					<h3>@Model.ProductDetail.Product.Price</h3>
+					<h3>@string.Format("{0:N0}đ",@Model.ProductDetail.Product.Price)</h3>
 					<div class="ratings d-flex flex-row align-items-center">	
 						<div class="d-flex flex-row">	
 							<i class='bx bxs-star'></i>	
